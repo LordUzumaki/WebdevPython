@@ -37,9 +37,10 @@ def form():
         db.session.add(user)
         db.session.commit()
         #redirect to the thank you page with the name parameter
-        return redirect(url_for('thank_you', name=name))
+        return redirect(url_for('form'))
+    users = User.query.all() #Retrieve all users from the database
     #Render the form.html template
-    return render_template('form.html')
+    return render_template('form.html', users=users)
 
 #Define the route for the thank you page
 @app.route('/thank_you')
@@ -50,9 +51,11 @@ def thank_you():
     return f'Thank you, {name}'
 
 #Run the Flask Application
-
-if __name__ == '__name__':
-    #Create the database tables
-    db.create_all()
-    app.run(debug=True)
-    
+if __name__ == '__main__':
+    print("Starting the Flask application...")
+    # Ensure database creation is within application context
+    with app.app_context():
+        db.create_all()
+        print("Database tables created.")
+    # Run the Flask application on port 5500
+    app.run(debug=True, port=5500)
